@@ -12,7 +12,6 @@ const PORT = process.env.PORT || 3000;
 
 var util = require('util');
 var parser = new xml2js.Parser();
-let token: string;
 
 expressApp
   .use(xmlparser())
@@ -42,12 +41,7 @@ expressApp
   })
   .listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
 
-const invokeOperations = (
-  login: string,
-  senha: string,
-  matricula: string,
-  cpf: string
-) => {
+const invokeOperations = (login, senha, matricula, cpf) => {
   // example data
   const url =
     'https://www.consigsimples.com.br/wsautenticacaofuncionario/Servicos.asmx?op=AutenticacaoFuncionario';
