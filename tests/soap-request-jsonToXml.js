@@ -1,28 +1,34 @@
+import express from 'express';
 const soapRequest = require('easy-soap-request');
 const { soap } = require('strong-soap');
+require('dotenv/config');
 
-const expressApp = require('express')();
+const expressApp = express();
+expressApp.use(express.json());
 const bodyParser = require('body-parser');
 
 var XMLHandler = soap.XMLHandler;
 var xmlHandler = new XMLHandler();
+var util = require('util');
 
 expressApp
   .use(bodyParser.json())
-  .post('/parallel-soap-invoke', (req, res) => {
-    console.log(req.body.login);
-    // const { login, senha, matricula, cpf } = req.body;
-    // console.log(login);
-    // console.log(senha);
-    // console.log(matricula);
-    // console.log(cpf);
-    // invokeOperations( login, senha, matricula , cpf )
-    .then((results) => res.status(200).send(results))
-    // .catch(({ message: error }) => res.status(500).send({ error }));
-  })
-  .listen(3000, () => console.log('Waiting for incoming requests'));
+  .post('/webservice', (req, res) => {
+    const { login, senha, matricula, cpf } = req.body;
 
-const invokeOperations = (login, senha, matricula, cpf) => {
+    invokeOperations(login, senha, matricula, cpf);
+    // .then((results) => res.status(200).send('results'))
+    // .catch(({ message: error }) => res.status(500).send({ error }));
+    return res.json({ message: 'Requisição Recebida!' });
+  })
+  .listen(3333, () => console.log('Waiting for incoming requests'));
+
+const invokeOperations = (
+  login: string,
+  senha: string,
+  matricula: string,
+  cpf: string
+) => {
   var login = process.env.LOGIN;
   var senha = process.env.SENHA;
   var matricula = process.env.MATRICULA;
@@ -48,23 +54,18 @@ const invokeOperations = (login, senha, matricula, cpf) => {
   </soap:Body>
 </soap:Envelope>`;
 
-  var xmlToJson = xmlHandler.xmlToJson(null, xml, null);
-
-  console.log('xmlToJson: ');
-  console.log(xmlToJson);
-
   // usage of module
   (async () => {
     const { response } = await soapRequest({
       url: url,
       headers: sampleHeaders,
       xml: xml,
-      timeout: 2000,
+      timeout: 1000,
     }); // Optional timeout parameter(milliseconds)
     const { headers, body, statusCode } = response;
     console.log(headers);
     console.log(body);
     console.log(statusCode);
   })();
+  // https://medium.com/better-programming/how-to-perform-soap-requests-with-node-js-4a9627070eb6
 };
-// https://medium.com/better-programming/how-to-perform-soap-requests-with-node-js-4a9627070eb6
