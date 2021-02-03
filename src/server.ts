@@ -3,6 +3,7 @@ const soapRequest = require('easy-soap-request');
 const { soap } = require('strong-soap');
 require('dotenv/config');
 var xml2js = require('xml2js');
+var xmlResponse = require('xml');
 
 const expressApp = express();
 expressApp.use(express.json());
@@ -10,6 +11,7 @@ const xmlparser = require('express-xml-bodyparser');
 
 var util = require('util');
 var parser = new xml2js.Parser();
+let token: string;
 
 expressApp
   .use(xmlparser())
@@ -30,10 +32,12 @@ expressApp
       req.body['soap:envelope']['soap:body'][0]['autenticacaofuncionario'][0][
         'cpf'
       ][0];
-    invokeOperations(login, senha, matricula, cpf);
-    // .then((results) => res.status(200).send('results'))
-    // .catch(({ message: error }) => res.status(500).send({ error }));
-    return res.json({ message: 'Requisição Recebida!' });
+    const teste = invokeOperations(login, senha, matricula, cpf).then(
+      (teste) => {
+        console.log(teste);
+        res.json(teste);
+      }
+    );
   })
   .listen(3333, () => console.log('Waiting for incoming requests'));
 
@@ -65,17 +69,25 @@ const invokeOperations = (
   </soap:Envelope>`;
 
   // usage of module
-  (async () => {
+  return (async () => {
     const { response } = await soapRequest({
       url: url,
       headers: sampleHeaders,
       xml: xml,
-      timeout: 2000,
+      timeout: 5000,
     }); // Optional timeout parameter(milliseconds)
     const { headers, body, statusCode } = response;
-    console.log(headers);
-    console.log(body);
-    console.log(statusCode);
+    // console.log(headers);
+    // console.log(body);
+    // console.log(statusCode);
+    parser.parseString(body, function (err, result) {
+      token =
+        result['soap:Envelope']['soap:Body'][0][
+          'AutenticacaoFuncionarioResponse'
+        ][0]['AutenticacaoFuncionarioResult'][0]['token'][0];
+    });
+
+    return token;
   })();
   // https://medium.com/better-programming/how-to-perform-soap-requests-with-node-js-4a9627070eb6
 };
