@@ -8,10 +8,15 @@ var xmlResponse = require('xml');
 const expressApp = express();
 expressApp.use(express.json());
 const xmlparser = require('express-xml-bodyparser');
+const PORT = process.env.PORT || 3000;
 
 var util = require('util');
 var parser = new xml2js.Parser();
 let token: string;
+
+expressApp.get('/', (req, res) => {
+ res.
+};
 
 expressApp
   .use(xmlparser())
@@ -39,7 +44,7 @@ expressApp
       }
     );
   })
-  .listen(3333, () => console.log('Waiting for incoming requests'));
+  .listen(PORT, () => console.log('Waiting for incoming requests'));
 
 const invokeOperations = (
   login: string,
