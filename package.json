@@ -5,6 +5,7 @@
   "repository": "https://github.com/rafaelsanchezsouza/soap-request.git",
   "author": "Rafael Sanchez Souza <rafaelsanchezsouza@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules app/src/server.ts"
   },
