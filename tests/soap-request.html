@@ -1,0 +1,33 @@
+<html>
+<script src="https://cdn.jsdelivr.net/npm/easy-soap-request/dist/easy-soap-request.js"></script>
+<script>
+  const url = 'https://www.consigsimples.com.br/wsautenticacaofuncionario/Servicos.asmx?op=AutenticacaoFuncionario'
+  const sampleHeaders = {
+    'Content-Type': 'text/xml;charset=UTF-8',
+    SOAPAction: '/AutenticacaoFuncionario',
+  };
+  const xml = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AutenticacaoFuncionario>
+      <login>${process.env.LOGIN}</login>
+      <senha>${process.env.SENHA}</senha>
+      <matricula>${process.env.MATRICULA}</matricula>
+      <cpf>${process.env.CPF}</cpf>
+    </AutenticacaoFuncionario>
+  </soap:Body>
+</soap:Envelope>`;
+  async function makeRequest() {
+    const { response } = await soapRequest({ url: url, headers: sampleHeaders, xml: xml, timeout: 1000 });
+    const { headers, body, statusCode } = response;
+    console.log(headers);
+    console.log(body);
+    console.log(statusCode);
+    document.body.innerHTML = body;
+  };
+  makeRequest();
+</script>
+
+<body></body>
+
+</html>
