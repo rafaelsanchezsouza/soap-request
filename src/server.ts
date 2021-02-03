@@ -44,7 +44,7 @@ expressApp
       }
     );
   })
-  .listen(PORT, () => console.log('Waiting for incoming requests'));
+  .listen(PORT, () => console.log(`Our app is running on port ${ PORT }`));
 
 const invokeOperations = (
   login: string,
